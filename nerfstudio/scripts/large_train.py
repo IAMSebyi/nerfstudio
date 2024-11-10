@@ -19,31 +19,28 @@ ns-large-train
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-from collections import defaultdict
-
-import shutil
-import shlex
-import joblib
-
-from rich.prompt import Confirm
-
 import random
+import shlex
+import shutil
 import socket
+import sys
 import traceback
+from collections import defaultdict
 from datetime import timedelta
+from pathlib import Path
 from typing import Any, Callable, Literal, Optional
 
+import joblib
 import numpy as np
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
 import tyro
+from rich.prompt import Confirm
 
-from nerfstudio.data.utils import colmap_parsing_utils as colmap_utils
 from nerfstudio.configs.config_utils import convert_markup_to_ansi
 from nerfstudio.configs.method_configs import AnnotatedBaseConfigUnion
+from nerfstudio.data.utils import colmap_parsing_utils as colmap_utils
 from nerfstudio.engine.trainer import TrainerConfig
 from nerfstudio.utils import comms, profiler
 from nerfstudio.utils.rich_utils import CONSOLE
