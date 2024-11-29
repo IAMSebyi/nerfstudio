@@ -16,7 +16,6 @@
 from __future__ import annotations
 
 import math
-import sys
 from dataclasses import dataclass, field
 from functools import partial
 from pathlib import Path
@@ -59,6 +58,8 @@ class ColmapDataParserConfig(DataParserConfig):
     """How much to downscale images. If not set, images are chosen such that the max dimension is <1600px."""
     downscale_rounding_mode: Literal["floor", "round", "ceil"] = "floor"
     """How to round downscale image height and Image width."""
+    force_downscale: bool = False
+    """Whether to downscale images without asking or not."""
     scene_scale: float = 1.0
     """How much to scale the region of interest by."""
     orientation_method: Literal["pca", "up", "vertical", "none"] = "up"
@@ -541,10 +542,10 @@ class ColmapDataParser(DataParser):
                 CONSOLE.print(
                     f"[bold red]Downscaled images do not exist for factor of {self._downscale_factor}.[/bold red]"
                 )
-                if Confirm.ask(
-                    f"\nWould you like to downscale the images using '{self.config.downscale_rounding_mode}' rounding mode now?",
-                    default=False,
-                    console=CONSOLE,
+                if self.config.force_downscale or Confirm.ask(
+                        f"\nWould you like to downscale the images using '{self.config.downscale_rounding_mode}' rounding mode now?",
+                        default=False,
+                        console=CONSOLE,
                 ):
                     # Install the method
                     self._downscale_images(
@@ -572,8 +573,6 @@ class ColmapDataParser(DataParser):
                             self.config.downscale_rounding_mode,
                             nearest_neighbor=True,
                         )
-                else:
-                    sys.exit(1)
 
         # Return transformed filenames
         if self._downscale_factor > 1:
